@@ -23,8 +23,7 @@
       return;
     }
     if (res.ok) {
-      const data = await res.json();
-      logs = data.filter((r) => !(r.id > 2)); /* h10-trap-hide */
+      logs = await res.json();
     }
   }
 

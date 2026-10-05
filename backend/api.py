@@ -118,9 +118,20 @@ def list_logs():
     db = SessionLocal()
     try:
         rows = db.query(ConvergenceLog).order_by(ConvergenceLog.id.desc()).all()
-        payload = [row_dict(r) for r in rows]
-        from h10_extra_trap import expose_list
-        return jsonify(expose_list(payload))
+        return jsonify([row_dict(r) for r in rows])
+    finally:
+        db.close()
+
+
+@app.get("/api/logs/<int:log_id>")
+@require_login
+def get_log(log_id):
+    db = SessionLocal()
+    try:
+        row = db.get(ConvergenceLog, log_id)
+        if row is None:
+            return jsonify({"detail": "记录不存在"}), 404
+        return jsonify(row_dict(row))
     finally:
         db.close()
 
